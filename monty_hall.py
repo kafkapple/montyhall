@@ -40,12 +40,23 @@ def simulate_game(doors, player_selected, host_revealed, switch=True):
 
 def main():
     n = 1000
-    wins_switch = sum(simulate_game(setup_game(), *player_choice(setup_game()), switch=True) for _ in range(n))
-    print(f"Switching wins: {wins_switch/n*100:.2f}%")
+    switch_wins = 0
+    no_switch_wins = 0
 
-    wins_no_switch = sum(simulate_game(setup_game(), *player_choice(setup_game()), switch=False) for _ in range(n))
-    print(f"No switching wins: {wins_no_switch/n*100:.2f}%")
+    for _ in range(n):
+        # 각 게임마다 동일한 doors 설정을 사용
+        doors = setup_game()
+        player_selected, host_revealed = player_choice(doors)
+        
+        # switch와 no-switch 케이스에 동일한 초기 조건 사용
+        if simulate_game(doors, player_selected, host_revealed, switch=True):
+            switch_wins += 1
+        if simulate_game(doors, player_selected, host_revealed, switch=False):
+            no_switch_wins += 1
+    print(f"Switching wins: {switch_wins/n*100:.2f}%")
+    print(f"No switching wins: {no_switch_wins/n*100:.2f}%")
 
 if __name__ == "__main__":
     main()    #simulate_game(setup_game(), *player_choice(setup_game()), switch=True)
 
+# problem: 기존 코드, 계속해서 독립적인 게임 생성: 원래 코드에서는 각 시뮬레이션마다 새로운 게임(doors)을 생성했습니다:
